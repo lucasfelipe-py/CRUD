@@ -3,13 +3,16 @@ from tkinter import *
 from tkinter import font
 from tkinter import ttk
 from tkcalendar import DateEntry
+from view import *
+from tkinter import messagebox
+global tree
 
+# Cores ---------------------------------------------------
 
-# Cores
 cor_cinza, cor_cinzaclaro, cor_branca, cor_verde, cor_1, cor_2 = "#696969", "#DCDCDC", "#feffff", "#4fa882", "#38576b", "#403d3d"
 cor_3, cor_azul, cor_vermelha, cor_verde2, cor_azulsky, cor_preta = "#e06636", "#038cfc", "#ef5350", "#263238", "#e9edf5", "#000000"
 
-# Método para reduzir o código das labels
+# Método para reduzir o código das labels -----------------
 def texto(frame, x, y, string, fonte):
     label = Label(frame, text=string, relief='flat', anchor=NW, font=(fonte), bg=cor_cinzaclaro, fg=cor_preta)
     label.place(x=x, y=y)
@@ -21,7 +24,7 @@ janela.geometry('1043x453')
 janela.configure(background=cor_azulsky)
 janela.resizable(width=FALSE, height=FALSE)
 
-# Frames
+# Frames ---------------------------------------------------
     # Frame de cima (titulo)
 frame_cima = Frame(janela, width=310, height=50, bg=cor_cinza, relief='flat')
 frame_cima.grid(row=0, column=0)
@@ -69,56 +72,134 @@ texto(frame_baixo, 10, 250, 'Observações: ', 'Tahoma 10') # Label
 entrada_observacoes = Entry(frame_baixo, width=45, justify='left')
 entrada_observacoes.place(x=13, y=280)
 
-# Botões
+# Funções CRUD ----------------------------------------------
+    # CREATE
+def create():
+    nome, email, contato = entrada_nome.get(), entrada_email.get(), entrada_contato.get()
+    data, sexo, etc = entrada_calendario.get(), entrada_sexo.get(), entrada_observacoes.get()
+
+    lista = [nome, email, contato, data, sexo, etc]
+
+    if nome == '':
+        messagebox.showerror('Erro:', 'O nome não pode ser vazio')
+    else:
+        create_info(lista)
+        messagebox.showinfo('Sucesso:', 'Os dados foram inseridos com sucesso!')
+        entrada_nome.delete(0, 'end')
+        entrada_email.delete(0, 'end')
+        entrada_contato.delete(0, 'end')
+        entrada_calendario.delete(0, 'end')
+        entrada_sexo.delete(0, 'end')
+        entrada_observacoes.delete(0, 'end')
+
+    for i in frame_direita.winfo_children():
+        i.destroy()
+    
+    read()  
+    # READ
+def read():
+    global tree
+    
+    lista_cadastrada = read_info()
+        # Cabeçalho
+    info_header = ['ID', 'Nome', 'E-mail', 'Contato', 'Data entrada', 'Sexo', 'Observações']
+
+        # Método de criação da tabela (tree)
+    tree = ttk.Treeview(frame_direita, selectmode='extended', columns=info_header, show='headings')
+
+        # Barra de rolagem vertical
+    barra_vertical = ttk.Scrollbar(frame_direita, orient='vertical', command=tree.yview)
+
+        # Barra de rolagem horizontal
+    barra_horizontal = ttk.Scrollbar(frame_direita, orient='horizontal', command=tree.xview)
+
+        # Setando a tabela (tree)
+    tree.configure(yscrollcommand=barra_vertical.set, xscrollcommand=barra_horizontal.set)
+    tree.grid(column=0, row=0, sticky='nsew')
+    barra_vertical.grid(column=1, row=0, sticky='ns')
+    barra_horizontal.grid(column=0, row=1, sticky='ew')
+    frame_direita.grid_rowconfigure(0, weight=12)
+
+    header_pos = ['nw', 'nw', 'nw', 'nw', 'nw', 'nw', 'nw']
+    header_tam = [35, 170, 140, 100, 120, 65, 100]
+    i = 0
+
+    for coluna in info_header:
+        tree.heading(coluna, text=coluna.title(), anchor=CENTER)
+        tree.column(coluna, width=header_tam[i], anchor=header_pos[i])
+        i += 1
+
+    for item in lista_cadastrada:
+        tree.insert('', 'end', values=item)
+    # UPDATE
+def update():
+    confirmando = True
+    try:
+        dados_tree = tree.focus()
+        dicionario_tree = tree.item(dados_tree)
+        lista_tree = dicionario_tree['values']
+        id = lista_tree[0]
+
+        entrada_nome.delete(0, 'end')
+        entrada_email.delete(0, 'end')
+        entrada_contato.delete(0, 'end')
+        entrada_calendario.delete(0, 'end')
+        entrada_sexo.delete(0, 'end')
+        entrada_observacoes.delete(0, 'end')
+
+        entrada_nome.insert(0, lista_tree[1])
+        entrada_email.insert(0, lista_tree[2])
+        entrada_contato.insert(0, lista_tree[3])
+        entrada_calendario.insert(0, lista_tree[4])
+        entrada_sexo.insert(0, lista_tree[5])
+        entrada_observacoes.insert(0, lista_tree[6])
+
+        def atualizar():
+            nome, email, contato = entrada_nome.get(), entrada_email.get(), entrada_contato.get()
+            data, sexo, etc = entrada_calendario.get(), entrada_sexo.get(), entrada_observacoes.get()
+
+            lista = [nome, email, contato, data, sexo, etc, id]
+
+            if nome == '':
+                messagebox.showerror('Erro:', 'O nome não pode ser vazio')
+            else:
+                update_info(lista)
+                messagebox.showinfo('Sucesso:', 'Os dados foram atualizados com sucesso!')
+                entrada_nome.delete(0, 'end')
+                entrada_email.delete(0, 'end')
+                entrada_contato.delete(0, 'end')
+                entrada_calendario.delete(0, 'end')
+                entrada_sexo.delete(0, 'end')
+                entrada_observacoes.delete(0, 'end')
+
+            for i in frame_direita.winfo_children():
+                i.destroy()
+        
+            read()
+        
+            
+        # Confirmar
+        botao_confirmar = Button(frame_baixo, command=atualizar, width=10, text='Confirmar', font=('Tahoma 10'), bg='#2F4F4F', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
+        botao_confirmar.place(x=109, y=370)
+    
+    except IndexError:
+        messagebox.showerror('Erro:', 'Selecione alguma informação para atualizar')
+
+# Botões ----------------------------------------------------
 
     # Inserir
-botao_inserir = Button(frame_baixo, width=10, text='Inserir', font=('Tahoma 10'), bg='#191970', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
+botao_inserir = Button(frame_baixo, width=10, command=create, text='Inserir', font=('Tahoma 10'), bg='#191970', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
 botao_inserir.place(x=13, y=340)
 
     # Atualizar
-botao_atualizar = Button(frame_baixo, width=10, text='Atualizar', font=('Tahoma 10'), bg='#2F4F4F', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
+botao_atualizar = Button(frame_baixo, width=10, command=update, text='Atualizar', font=('Tahoma 10'), bg='#2F4F4F', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
 botao_atualizar.place(x=109, y=340)
 
     # Deletar
 botao_deletar = Button(frame_baixo, width=10, text='Deletar', font=('Tahoma 10'), bg='#A52A2A', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
 botao_deletar.place(x=205, y=340)
 
-# Tabela de dados
-
-    # Lista de pessoas cadastradas
-lista_cadastrada = [['1', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste']]
-
-    # Cabeçalho
-info_header = ['ID', 'Nome', 'E-mail', 'Contato', 'Data entrada', 'Sexo', 'Observações']
-
-    # Método de criação da tabela (tree)
-tree = ttk.Treeview(frame_direita, selectmode='extended', columns=info_header, show='headings')
-
-    # Barra de rolagem vertical
-barra_vertical = ttk.Scrollbar(frame_direita, orient='vertical', command=tree.yview)
-
-    # Barra de rolagem horizontal
-barra_horizontal = ttk.Scrollbar(frame_direita, orient='horizontal', command=tree.xview)
-
-    # Setando a tabela (tree)
-tree.configure(yscrollcommand=barra_vertical.set, xscrollcommand=barra_horizontal.set)
-tree.grid(column=0, row=0, sticky='nsew')
-barra_vertical.grid(column=1, row=0, sticky='ns')
-barra_horizontal.grid(column=0, row=1, sticky='ew')
-frame_direita.grid_rowconfigure(0, weight=12)
-
-header_pos = ['nw', 'nw', 'nw', 'nw', 'nw', 'nw', 'nw']
-header_tam = [35, 170, 140, 100, 120, 65, 100]
-i = 0
-
-for coluna in info_header:
-    tree.heading(coluna, text=coluna.title(), anchor=CENTER)
-    tree.column(coluna, width=header_tam[i], anchor=header_pos[i])
-    i += 1
-
-for item in lista_cadastrada:
-    tree.insert('', 'end', values=item)
-
-# Abrir janela
+# Abrir janela -----------------------------------------------
 if __name__ == '__main__':
+    read()
     janela.mainloop()
