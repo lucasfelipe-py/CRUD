@@ -2,7 +2,7 @@ from cgitb import text
 from tkinter import *
 from tkinter import font
 from tkinter import ttk
-from tkcalendar import Calendar, DateEntry
+from tkcalendar import DateEntry
 
 
 # Cores
@@ -86,14 +86,7 @@ botao_deletar.place(x=205, y=340)
 # Tabela de dados
 
     # Lista de pessoas cadastradas
-lista_cadastrada = [
-    ['1', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste'],
-    ['2', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste'],
-    ['3', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste'],
-    ['4', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste'],
-    ['5', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste'],
-    ['6', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste']
-]
+lista_cadastrada = [['1', 'Lucas F. Rogério', 'lucas@mail.com', '48 99999-9999', '01/01/22', 'Masculino', 'Teste']]
 
     # Cabeçalho
 info_header = ['ID', 'Nome', 'E-mail', 'Contato', 'Data entrada', 'Sexo', 'Observações']
