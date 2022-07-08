@@ -30,10 +30,10 @@ def update_info(lista):
         query = 'UPDATE formulario1 SET nome=?, email=?, telefone=?, dia_em=?, sexo=?, observacoes=? WHERE id=?'
         cursor.execute(query, lista)
 
-'''
+
 # Deletar informações (D)
-with conexao:
-    cursor = conexao.cursor()
-    query = 'DELETE FROM formulario1 WHERE id=?'
-    cursor.execute(query, lista)
-'''
+def delete_info(lista):
+    with conexao:
+        cursor = conexao.cursor()
+        query = 'DELETE FROM formulario1 WHERE id=?'
+        cursor.execute(query, lista)

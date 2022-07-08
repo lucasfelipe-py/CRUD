@@ -1,6 +1,4 @@
-from cgitb import text
 from tkinter import *
-from tkinter import font
 from tkinter import ttk
 from tkcalendar import DateEntry
 from view import *
@@ -9,22 +7,22 @@ global tree
 
 # Cores ---------------------------------------------------
 
-cor_cinza, cor_cinzaclaro, cor_branca, cor_verde, cor_1, cor_2 = "#696969", "#DCDCDC", "#feffff", "#4fa882", "#38576b", "#403d3d"
-cor_3, cor_azul, cor_vermelha, cor_verde2, cor_azulsky, cor_preta = "#e06636", "#038cfc", "#ef5350", "#263238", "#e9edf5", "#000000"
+cor_cinza, cor_cinzaclaro, cor_branca, cor_azulsky, cor_preta = "#696969", "#DCDCDC", "#feffff", "#e9edf5", "#000000"
 
 # Método para reduzir o código das labels -----------------
 def texto(frame, x, y, string, fonte):
     label = Label(frame, text=string, relief='flat', anchor=NW, font=(fonte), bg=cor_cinzaclaro, fg=cor_preta)
     label.place(x=x, y=y)
 
-# Janela
+# Janela --------------------------------------------------
 janela = Tk()
 janela.title('CRUD')
 janela.geometry('1043x453')
 janela.configure(background=cor_azulsky)
 janela.resizable(width=FALSE, height=FALSE)
 
-# Frames ---------------------------------------------------
+# Frames --------------------------------------------------
+
     # Frame de cima (titulo)
 frame_cima = Frame(janela, width=310, height=50, bg=cor_cinza, relief='flat')
 frame_cima.grid(row=0, column=0)
@@ -37,42 +35,45 @@ frame_baixo.grid(row=1, column=0, sticky=NSEW, padx=0, pady=1)
 frame_direita = Frame(janela, width=588, height=403, bg=cor_cinzaclaro, relief='flat')
 frame_direita.grid(row=0, column=1, rowspan=2, padx=1, pady=0, sticky=NSEW)
 
-# Label frame_cima (texto: Formulário de Cadastro)
+# Labels e entradas ----------------------------------------
+
+    # Label frame_cima (texto: Formulário de Cadastro)
 label_framecima = Label(frame_cima, text='Formulário de Cadastro', relief='flat', anchor='center', font=('Tahoma 13 bold'), bg=cor_cinza, fg=cor_branca)
 label_framecima.place(x=50, y=12)
 
-# Entrada (nome)
+    # Entrada (nome)
 texto(frame_baixo, 10, 10, 'Nome: ', 'Tahoma 10') # Label
 entrada_nome = Entry(frame_baixo, width=45, justify='left')
 entrada_nome.place(x=13, y=40)
 
-# Entrada (e-mail)
+    # Entrada (e-mail)
 texto(frame_baixo, 10, 70, 'E-mail: ', 'Tahoma 10') # Label
 entrada_email = Entry(frame_baixo, width=45, justify='left')
 entrada_email.place(x=13, y=100)
 
-# Entrada (contato)
+    # Entrada (contato)
 texto(frame_baixo, 10, 130, 'Contato: ', 'Tahoma 10') # Label
 entrada_contato = Entry(frame_baixo, width=45, justify='left')
 entrada_contato.place(x=13, y=160)
 
-# Entrada (data)
+    # Entrada (data)
 texto(frame_baixo, 10, 190, 'Data de entrada: ', 'Tahoma 10') # Label
 entrada_calendario = DateEntry(frame_baixo, width=12, background=cor_cinza, foreground='white', borderwidth=2)
 entrada_calendario.place(x=13, y=220)
 
-# Entrada (sexo)
+    # Entrada (sexo)
 values = ['', 'Masculino', 'Feminino']
 texto(frame_baixo, 160, 190, 'Sexo: ', 'Tahoma 10') # Label
 entrada_sexo = ttk.Combobox(frame_baixo, width=15, justify='left', values=values, font=('Tahoma 10'))
 entrada_sexo.place(x=160, y=220)
 
-# Observações (etc)
+    # Observações (etc)
 texto(frame_baixo, 10, 250, 'Observações: ', 'Tahoma 10') # Label
 entrada_observacoes = Entry(frame_baixo, width=45, justify='left')
 entrada_observacoes.place(x=13, y=280)
 
 # Funções CRUD ----------------------------------------------
+
     # CREATE
 def create():
     nome, email, contato = entrada_nome.get(), entrada_email.get(), entrada_contato.get()
@@ -133,7 +134,6 @@ def read():
         tree.insert('', 'end', values=item)
     # UPDATE
 def update():
-    confirmando = True
     try:
         dados_tree = tree.focus()
         dicionario_tree = tree.item(dados_tree)
@@ -176,14 +176,29 @@ def update():
                 i.destroy()
         
             read()
-        
-            
+                    
         # Confirmar
         botao_confirmar = Button(frame_baixo, command=atualizar, width=10, text='Confirmar', font=('Tahoma 10'), bg='#2F4F4F', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
         botao_confirmar.place(x=109, y=370)
-    
     except IndexError:
         messagebox.showerror('Erro:', 'Selecione alguma informação para atualizar')
+    # DELETE
+def delete():
+    try:
+        dados_tree = tree.focus()
+        dicionario_tree = tree.item(dados_tree)
+        lista_tree = dicionario_tree['values']
+        id = [lista_tree[0]]
+    except IndexError:
+        messagebox.showerror('Erro', 'Selecione alguma informação para deletar')
+    
+    delete_info(id)
+    messagebox.showinfo('Sucesso', 'Os dados foram deletados com sucesso')
+
+    for i in frame_direita.winfo_children():
+        i.destroy()
+        
+    read()
 
 # Botões ----------------------------------------------------
 
@@ -196,10 +211,10 @@ botao_atualizar = Button(frame_baixo, width=10, command=update, text='Atualizar'
 botao_atualizar.place(x=109, y=340)
 
     # Deletar
-botao_deletar = Button(frame_baixo, width=10, text='Deletar', font=('Tahoma 10'), bg='#A52A2A', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
+botao_deletar = Button(frame_baixo, width=10, command=delete, text='Deletar', font=('Tahoma 10'), bg='#A52A2A', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
 botao_deletar.place(x=205, y=340)
 
-# Abrir janela -----------------------------------------------
+# Abrir janela ----------------------------------------------
 if __name__ == '__main__':
     read()
     janela.mainloop()
