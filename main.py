@@ -10,8 +10,8 @@ global tree
 cor_cinza, cor_cinzaclaro, cor_branca, cor_azulsky, cor_preta = "#696969", "#DCDCDC", "#feffff", "#e9edf5", "#000000"
 
 # Método para reduzir o código das labels -----------------
-def texto(frame, x, y, string, fonte):
-    label = Label(frame, text=string, relief='flat', anchor=NW, font=(fonte), bg=cor_cinzaclaro, fg=cor_preta)
+def texto(x, y, string):
+    label = Label(frame_baixo, text=string, relief='flat', anchor=NW, font=('Tahoma 10'), bg=cor_cinzaclaro, fg=cor_preta)
     label.place(x=x, y=y)
 
 # Janela --------------------------------------------------
@@ -42,33 +42,33 @@ label_framecima = Label(frame_cima, text='Formulário de Cadastro', relief='flat
 label_framecima.place(x=50, y=12)
 
     # Entrada (nome)
-texto(frame_baixo, 10, 10, 'Nome: ', 'Tahoma 10') # Label
+texto(10, 10, 'Nome: ') # Label
 entrada_nome = Entry(frame_baixo, width=45, justify='left')
 entrada_nome.place(x=13, y=40)
 
     # Entrada (e-mail)
-texto(frame_baixo, 10, 70, 'E-mail: ', 'Tahoma 10') # Label
+texto(10, 70, 'E-mail: ') # Label
 entrada_email = Entry(frame_baixo, width=45, justify='left')
 entrada_email.place(x=13, y=100)
 
     # Entrada (contato)
-texto(frame_baixo, 10, 130, 'Contato: ', 'Tahoma 10') # Label
+texto(10, 130, 'Contato: ') # Label
 entrada_contato = Entry(frame_baixo, width=45, justify='left')
 entrada_contato.place(x=13, y=160)
 
     # Entrada (data)
-texto(frame_baixo, 10, 190, 'Data de entrada: ', 'Tahoma 10') # Label
+texto(10, 190, 'Data de entrada: ') # Label
 entrada_calendario = DateEntry(frame_baixo, width=12, background=cor_cinza, foreground='white', borderwidth=2)
 entrada_calendario.place(x=13, y=220)
 
     # Entrada (sexo)
 values = ['', 'Masculino', 'Feminino']
-texto(frame_baixo, 160, 190, 'Sexo: ', 'Tahoma 10') # Label
+texto(160, 190, 'Sexo: ') # Label
 entrada_sexo = ttk.Combobox(frame_baixo, width=15, justify='left', values=values, font=('Tahoma 10'))
 entrada_sexo.place(x=160, y=220)
 
     # Observações (etc)
-texto(frame_baixo, 10, 250, 'Observações: ', 'Tahoma 10') # Label
+texto(10, 250, 'Observações: ') # Label
 entrada_observacoes = Entry(frame_baixo, width=45, justify='left')
 entrada_observacoes.place(x=13, y=280)
 
