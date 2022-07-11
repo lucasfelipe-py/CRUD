@@ -82,10 +82,10 @@ def create():
     lista = [nome, email, contato, data, sexo, etc]
 
     if nome == '':
-        messagebox.showerror('Erro:', 'O nome não pode ser vazio')
+        messagebox.showerror('Erro', 'O nome não pode ser vazio!')
     else:
         create_info(lista)
-        messagebox.showinfo('Sucesso:', 'Os dados foram inseridos com sucesso!')
+        messagebox.showinfo('Sucesso', 'Os dados foram inseridos com sucesso!')
         entrada_nome.delete(0, 'end')
         entrada_email.delete(0, 'end')
         entrada_contato.delete(0, 'end')
@@ -161,10 +161,10 @@ def update():
             lista = [nome, email, contato, data, sexo, etc, id]
 
             if nome == '':
-                messagebox.showerror('Erro:', 'O nome não pode ser vazio')
+                messagebox.showerror('Erro', 'O nome não pode ser vazio!')
             else:
                 update_info(lista)
-                messagebox.showinfo('Sucesso:', 'Os dados foram atualizados com sucesso!')
+                messagebox.showinfo('Sucesso', 'Os dados foram atualizados com sucesso!')
                 entrada_nome.delete(0, 'end')
                 entrada_email.delete(0, 'end')
                 entrada_contato.delete(0, 'end')
@@ -176,12 +176,13 @@ def update():
                 i.destroy()
         
             read()
+            botao_confirmar.destroy() # Remover botão confirmar da tela
                     
         # Confirmar
         botao_confirmar = Button(frame_baixo, command=atualizar, width=10, text='Confirmar', font=('Tahoma 10'), bg='#2F4F4F', fg=cor_cinzaclaro, relief='raised', overrelief='ridge', anchor='center')
         botao_confirmar.place(x=109, y=370)
     except IndexError:
-        messagebox.showerror('Erro:', 'Selecione alguma informação para atualizar')
+        messagebox.showerror('Erro', 'Selecione alguma informação para atualizar!')
     # DELETE
 def delete():
     try:
@@ -195,8 +196,8 @@ def delete():
     delete_info(id)
     messagebox.showinfo('Sucesso', 'Os dados foram deletados com sucesso')
 
-    for i in frame_direita.winfo_children():
-        i.destroy()
+    for info in frame_direita.winfo_children():
+        info.destroy()
         
     read()
 
@@ -216,5 +217,5 @@ botao_deletar.place(x=205, y=340)
 
 # Abrir janela ----------------------------------------------
 if __name__ == '__main__':
-    read()
-    janela.mainloop()
+    read() # Mostrar base de dados na janela
+    janela.mainloop() # Abrir janela
